@@ -18,13 +18,7 @@ public class JMessage{
 	
 	public JMessage(String JSON_Message){
 	
-	this.JSON_Message = JSON_Message;	
-	/*System.out.println("DEBUG: \n-------------------------------------\n" + "current message " + JSON_Message + "\n-------------------------------------\n");
-	
-	//--------------------------------------------------
-	this.JSON_Message = "{\"ok\":true,\"result\":[{\"update_id\":414250308,\"message\":{\"message_id\":10,\"from\":{\"id\":22407528,\"first_name\":\"Leonhard\"},\"chat\":{\"id\":22407528,\"first_name\":\"Leonhard\",\"type\":\"private\"},\"date\":1460036262,\"text\":\"Hallo bot\"}}]";
-	//--------------------------------------------------
-	*/	
+	this.JSON_Message = JSON_Message;		
 	//parse the given JSON-Message into the variables
 	
 	message_id = parse("message_id");
@@ -36,6 +30,7 @@ public class JMessage{
 	date = parse("date");
 	text = parse("text");
 	update_id = parse("update_id");
+	//Todo: find other parameters and save them into others
 	others = "";
 	}
 
@@ -54,15 +49,12 @@ public class JMessage{
 
 	//find occurrence of variable in string and return its value
 	private String parse(String variable){
-		//default case, no duplicates available
 		int length;
 		length = variable.length();
 		String result = "";
 		for(int index = 0;(index+length+3)<JSON_Message.length(); index++){
-			//System.out.println(index + " " + length + " " + (index+length) + " " + JSON_Message.length());
 			if(JSON_Message.substring(index, index+length).equals(variable)){
 				//found occurence
-				//check whether it's a string or not
 				char delimiter;
 				int sub_end = index+length+4;
 
