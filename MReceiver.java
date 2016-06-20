@@ -13,15 +13,14 @@ public class MReceiver{
 	}
 	//get messages from the server, add them to the queue
 	public String sendCommand(String command){
-		//String getCommand = "https://api.telegram.org/bot208235593:AAEHULa6JebWylbQ38sd8d9fuzehmCsUJKg/getUpdates";
+		//build command from command base(address of the bot) and command itself		
 		String commandBase = "https://api.telegram.org/bot208235593:AAEHULa6JebWylbQ38sd8d9fuzehmCsUJKg/";
-		//String SEND = "sendMessage -d text=\"Hi thar too\" -d chat_id=22407528";
 		String getCommand = commandBase + command;
-		System.out.println("Sending command " + getCommand);
 		String result="";
 		URLConnection c = null;		
 		try
 		{
+			//self explanatory
 			URL u = new URL(getCommand);
 			c = u.openConnection();
 			c.connect();
@@ -50,22 +49,19 @@ public class MReceiver{
 
 	public void sendMessage(String message, String chat_id){
 
-		//"sendMessage -d text=\"Hi thar too\" -d chat_id=22407528"
-		//WATCH OUT FOR STRING BEING PARSED FOR "
+		//check if we're trying to send a message without a receiver		
 		if(chat_id==""){
 			return;
 		}
-		System.out.println("sending: " + message + chat_id);
+		//assembling the command part of the message
 		String command = "sendMessage?chat_id=" + chat_id+"&text="+ message;
 		System.out.println(sendCommand(command));
 
 	}
 
-	//parse to JMEssage later on
 	private String pollUpdates(){
-		//INSERT COMMAND FOR GETTING THE UPDATES HERE
+		//getting new updates from the telegram server		
 		String message = sendCommand("getUpdates");
-		//System.out.println(message);
 		return message;
 
 
@@ -73,25 +69,23 @@ public class MReceiver{
 
 	//puts new messages in the queue
 	public void getUpdates(){
-
 		String[] updates = splitUpdate(pollUpdates());
 		for(int i = 0; i<updates.length; i++){
-/*
-System.out.println("DEBUG: \n-------------------------------------\n" + "Current update " + updates[i] + "\n-------------------------------------\n");
-			*/
-			//System.out.println(updates[0]);
+			//check if it's a valid message then add to the message queue
+			//quick and dirty			
 			if(!updates[0].contains("\"result\":[]}")){			
 			JMessage m = new JMessage(updates[i]);
 			messages.add(m);
-			//m.printJMessage();
 			}
 		}
 
 	}
-
+	//splits the whole bunch of received update into many many sepparate ones
 	private String[] splitUpdate(String update){
+		//yep, that's how messages are sepparated
 		String[] updates = update.split("\\},\\{");
 		for(int i = 0; i<updates.length; i++){
+			//put back in those {} because they were lost at splitting			
 			if(i==0){
 				updates[i] = updates[i]+"}";
 			}else if(i==updates.length-1){
@@ -99,9 +93,6 @@ System.out.println("DEBUG: \n-------------------------------------\n" + "Current
 			}else{
 				updates[i] = "{" + updates[i] + "}";
 			}
-
-			/*System.out.println("DEBUG: \n-------------------------------------\n" + updates[i] + "\n-------------------------------------\n");
-				*/
 		}
 		return updates;
 	}
@@ -109,18 +100,17 @@ System.out.println("DEBUG: \n-------------------------------------\n" + "Current
 	//confirms messges until given message ID
 	public void confirmMessage(String updateID){
 			if(updateID==null||updateID.equals("")){
+				//in case of empty updateID				
 				return;
 			}
-			int offset = Integer.parseInt(updateID) + 1;
-			
-			/*System.out.println("DEBUG: \n-------------------------------------\n" + "sending: " + "/getUpdates -d offset=" + offset + "\n-------------------------------------\n");
-			*/
-
+			int offset = Integer.parseInt(updateID) + 1;			
 			sendCommand("getUpdates?offset=" + offset);
 	
 	}
+	
+	//returns the head of the message queue
 	public JMessage returnLatestMessage() throws NoJMessageFoundException{
-
+		//self explanatory
 		if(messages.peek()==null)
 			throw new NoJMessageFoundException("Message queue is empty");
 		else
