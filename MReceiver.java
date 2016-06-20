@@ -1,6 +1,7 @@
 import java.util.LinkedList;
 import java.io.*;
 import java.util.Random;
+import java.net.*;
 public class MReceiver{
 
 	private final String API_KEY;
@@ -12,44 +13,50 @@ public class MReceiver{
 	}
 	//get messages from the server, add them to the queue
 	public String sendCommand(String command){
-		//String getCommand = "curl -s -X POST https://api.telegram.org/bot208235593:AAEHULa6JebWylbQ38sd8d9fuzehmCsUJKg/getUpdates";
-		String commandBase = "curl -s -X POST https://api.telegram.org/bot208235593:AAEHULa6JebWylbQ38sd8d9fuzehmCsUJKg/";
+		//String getCommand = "https://api.telegram.org/bot208235593:AAEHULa6JebWylbQ38sd8d9fuzehmCsUJKg/getUpdates";
+		String commandBase = "https://api.telegram.org/bot208235593:AAEHULa6JebWylbQ38sd8d9fuzehmCsUJKg/";
 		//String SEND = "sendMessage -d text=\"Hi thar too\" -d chat_id=22407528";
-
 		String getCommand = commandBase + command;
-		//System.out.println("Sending command " + getCommand);
-		getCommand = getCommand.replaceAll("\"", "");				
+		System.out.println("Sending command " + getCommand);
 		String result="";
+		URLConnection c = null;		
 		try
 		{
-			Process proc=Runtime.getRuntime().exec(getCommand);
-			proc.waitFor();
-			BufferedReader read=new BufferedReader(new InputStreamReader(proc.getInputStream()));
+			URL u = new URL(getCommand);
+			c = u.openConnection();
+			c.connect();
+			BufferedReader read=new BufferedReader(new InputStreamReader(c.getInputStream()));
 
 			while(read.ready())
 			{
 				result+=(read.readLine());
 
-			}
-		}
-		catch(IOException e)
-		{
-			System.out.println(e.getMessage());
+			}		
 		}
 		catch(Exception e1){
 
 			e1.printStackTrace();
 
+		}finally{
+			try{
+			c.getInputStream().close();
+			}catch(Exception f){
+				f.printStackTrace();
+			}
 		}
+
 		return result;
 	}
-
 
 	public void sendMessage(String message, String chat_id){
 
 		//"sendMessage -d text=\"Hi thar too\" -d chat_id=22407528"
 		//WATCH OUT FOR STRING BEING PARSED FOR "
-		String command = "sendMessage -d \"text=" + message + "\" -d chat_id=" + chat_id;
+		if(chat_id==""){
+			return;
+		}
+		System.out.println("sending: " + message + chat_id);
+		String command = "sendMessage?chat_id=" + chat_id+"&text="+ message;
 		System.out.println(sendCommand(command));
 
 	}
@@ -109,7 +116,7 @@ System.out.println("DEBUG: \n-------------------------------------\n" + "Current
 			/*System.out.println("DEBUG: \n-------------------------------------\n" + "sending: " + "/getUpdates -d offset=" + offset + "\n-------------------------------------\n");
 			*/
 
-			sendCommand("getUpdates -d offset=" + offset);
+			sendCommand("getUpdates?offset=" + offset);
 	
 	}
 	public JMessage returnLatestMessage() throws NoJMessageFoundException{

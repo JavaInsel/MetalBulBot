@@ -14,7 +14,7 @@ public static void simpleBot(){
 
 		MReceiver m = new MReceiver("");
 		boolean cont = false;
-		JMessage ms=null;
+		JMessage ms=null;		
 		while(true){
 			try{
 				//getting updates + queueing them
@@ -27,9 +27,10 @@ public static void simpleBot(){
 				//System.out.println(n);
 			}
 			if(cont){
+				//System.out.println("got msg");
 				m.confirmMessage(ms.update_id);
 				//confirms latest message
-				//System.out.println("\n" + ms.chat_id + "\n");
+				//System.out.println("\n" + ms.text + "\n");
 				//ms.printJMessage();
 				String reply="defaultMessage";
 				//-----------------------------------
@@ -67,14 +68,12 @@ public static void simpleBot(){
 				
 
 				}else if(ms.text.contains("/8ball")){
-
-				String[] ballz = {"yes", "no", "reply→hazy,try→again", "outlook→not→so→good", "as→i→see→it,yes", "repeat→the→question", "not→in→a→million→years", "it→is→certain", "it→is→decidedly→so", "my→sources→say→no", "better→not→tell→you→now", "signs→point→to→yes", "count→on→it", "meh"};
-				int i = new Random().nextInt(13);
+				System.out.println("got 8ball");
+				String[] ballz = {"yes", "no", "reply hazy, try again", "outlook not so good", "as i see it, yes", "repeat the question", "not in a million years", "it is certain", "it is decidedly so", "my sources say no", "better not tell you now", "signs point to yes", "count on it", "meh"};
+				int i = new Random().nextInt(14);
 				String msg = ballz[i];
 				//"\/8ball"
-				if(ms.text.length()<10){
-					msg = "whaddya say?";
-				}
+
 				m.sendMessage(msg, ms.chat_id);
 
 				}
