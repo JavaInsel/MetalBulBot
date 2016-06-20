@@ -1,3 +1,7 @@
+import java.util.LinkedList;
+import java.io.*;
+import java.util.Random;
+
 public class Main{
 
 	public static void main(String[] args){
@@ -61,6 +65,26 @@ public static void simpleBot(){
 					m.sendMessage(url, ms.chat_id);
 				
 				
+
+				}else if(ms.text.contains("/8ball")){
+
+				String[] ballz = {"yes", "no", "reply→hazy,try→again", "outlook→not→so→good", "as→i→see→it,yes", "repeat→the→question", "not→in→a→million→years", "it→is→certain", "it→is→decidedly→so", "my→sources→say→no", "better→not→tell→you→now", "signs→point→to→yes", "count→on→it", "meh"};
+				int i = new Random().nextInt(13);
+				String msg = ballz[i];
+				//"\/8ball"
+				if(ms.text.length()<10){
+					msg = "whaddya say?";
+				}
+				m.sendMessage(msg, ms.chat_id);
+
+				}
+				else if(ms.text.contains("/debug")){
+					//to debug stuff and stuff
+					m.sendMessage("leer leer", ms.chat_id);
+				}
+				else{
+					//Spongebob!!!
+					m.sendMessage("What→Zit→Tooya,→" + ms.from_first_name + "?!?", ms.chat_id);
 
 				}
 				//-----------------------------------				

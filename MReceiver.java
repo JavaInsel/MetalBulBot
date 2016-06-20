@@ -49,7 +49,7 @@ public class MReceiver{
 
 		//"sendMessage -d text=\"Hi thar too\" -d chat_id=22407528"
 		//WATCH OUT FOR STRING BEING PARSED FOR "
-		String command = "sendMessage -d text=\"" + message + "\" -d chat_id=" + chat_id;
+		String command = "sendMessage -d \"text=" + message + "\" -d chat_id=" + chat_id;
 		System.out.println(sendCommand(command));
 
 	}
@@ -101,8 +101,11 @@ System.out.println("DEBUG: \n-------------------------------------\n" + "Current
 
 	//confirms messges until given message ID
 	public void confirmMessage(String updateID){
+			if(updateID==null||updateID.equals("")){
+				return;
+			}
 			int offset = Integer.parseInt(updateID) + 1;
-
+			
 			/*System.out.println("DEBUG: \n-------------------------------------\n" + "sending: " + "/getUpdates -d offset=" + offset + "\n-------------------------------------\n");
 			*/
 
@@ -119,41 +122,6 @@ System.out.println("DEBUG: \n-------------------------------------\n" + "Current
 	
 
 	
-
-	
-
-	public static void main(String[] args){
-		/*
-		MReceiver m = new MReceiver("");
-		m.sendMessage("Hi thar too", "22407528");
-		m.getUpdates();
-		String mID = "";
-		String uID = "";
-		try{
-			while(true){
-				JMessage ms = m.returnLatestMessage();
-				mID = ms.chat_id;
-				uID = ms.update_id;
-
-			}
-		}catch(NoJMessageFoundException e){
-			System.out.println("queue empty");
-		}
-		m.confirmMessage(uID);
-		m.getUpdates();
-		System.out.println("\nQueue should be empty\n");		
-		try{
-			while(true){
-				JMessage ms = m.returnLatestMessage();
-				
-				ms.printJMessage();
-			}
-		}catch(NoJMessageFoundException e){
-			System.out.println("queue empty");
-		}*/
-
-		simpleBot();
-	}
 
 
 }
